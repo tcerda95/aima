@@ -1,36 +1,35 @@
 package search.algorithm;
 
-import search.*;
+import search.AdyacentMovement;
+import search.Puzzle8Board;
+import search.PuzzleNProblem;
 import search.framework.Node;
 import search.framework.Problem;
 
-import java.util.HashSet;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
-import java.util.Optional;
 
-public class BreadthFirstSearch<S,A> extends GraphSearch<S,A> {
-    private final Queue<Node<S,A>> queue;
+public class DepthFirstSearch<S,A> extends GraphSearch<S,A> {
+    private final Deque<Node<S,A>> stack;
 
-    public BreadthFirstSearch(final Problem<S,A> problem) {
-        super(problem, true);
-        queue = new LinkedList<>();
+    public DepthFirstSearch(final Problem<S,A> problem) {
+        super(problem);
+        stack = new LinkedList<>();
     }
 
     @Override
     protected void addToFrontier(final Node<S,A> node) {
-        queue.offer(node);
+        stack.push(node);
     }
 
     @Override
     protected Node<S,A> removeFromFrontier() {
-        return queue.poll();
+        return stack.pop();
     }
 
     @Override
     protected boolean isFrontierEmpty() {
-        return queue.isEmpty();
+        return stack.isEmpty();
     }
 
     public static final void main(final String[] args) {
@@ -40,10 +39,9 @@ public class BreadthFirstSearch<S,A> extends GraphSearch<S,A> {
                 {7, 3, 2}
         };
         final Problem<Puzzle8Board, AdyacentMovement> puzzle8Problem = new PuzzleNProblem(board);
-        final BreadthFirstSearch<Puzzle8Board, AdyacentMovement> bfs = new BreadthFirstSearch<>(puzzle8Problem);
-        final Node<Puzzle8Board, AdyacentMovement> ans = bfs.search().get();
+        final DepthFirstSearch<Puzzle8Board, AdyacentMovement> dfs = new DepthFirstSearch<>(puzzle8Problem);
+        final Node<Puzzle8Board, AdyacentMovement> ans = dfs.search().get();
         System.out.println(ans);
         System.out.println(ans.getPathCost());
-        System.out.println("Metrics: " + bfs.getMetrics());
     }
 }
