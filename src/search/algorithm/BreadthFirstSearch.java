@@ -1,31 +1,29 @@
 package search.algorithm;
 
-import search.*;
 import search.framework.Node;
 import search.framework.Problem;
+import search.puzzle.AdyacentMovement;
+import search.puzzle.PuzzleNBoard;
+import search.puzzle.PuzzleNProblem;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
-import java.util.Optional;
 
 public class BreadthFirstSearch<S,A> extends GraphSearch<S,A> {
-    private final Queue<Node<S,A>> queue;
+    private final Queue<Node<S,A>> queue = new LinkedList<>();
 
     public BreadthFirstSearch(final Problem<S,A> problem) {
         super(problem, true);
-        queue = new LinkedList<>();
     }
 
     @Override
     protected void addToFrontier(final Node<S,A> node) {
-        queue.offer(node);
+        queue.add(node);
     }
 
     @Override
     protected Node<S,A> removeFromFrontier() {
-        return queue.poll();
+        return queue.remove();
     }
 
     @Override
@@ -35,13 +33,14 @@ public class BreadthFirstSearch<S,A> extends GraphSearch<S,A> {
 
     public static final void main(final String[] args) {
         int[][] board = new int[][] {
-                {5, 4, Puzzle8Board.EMPTY},
-                {6, 1, 8},
-                {7, 3, 2}
+                {5, 12, PuzzleNBoard.EMPTY, 10},
+                {6, 11, 8, 15},
+                {13, 3, 2, 14},
+                {1, 4, 9, 7}
         };
-        final Problem<Puzzle8Board, AdyacentMovement> puzzle8Problem = new PuzzleNProblem(board);
-        final BreadthFirstSearch<Puzzle8Board, AdyacentMovement> bfs = new BreadthFirstSearch<>(puzzle8Problem);
-        final Node<Puzzle8Board, AdyacentMovement> ans = bfs.search().get();
+        final Problem<PuzzleNBoard, AdyacentMovement> puzzle8Problem = new PuzzleNProblem(board);
+        final BreadthFirstSearch<PuzzleNBoard, AdyacentMovement> bfs = new BreadthFirstSearch<>(puzzle8Problem);
+        final Node<PuzzleNBoard, AdyacentMovement> ans = bfs.search().get();
         System.out.println(ans);
         System.out.println(ans.getPathCost());
         System.out.println("Metrics: " + bfs.getMetrics());

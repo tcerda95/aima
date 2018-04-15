@@ -1,4 +1,4 @@
-package search;
+package search.puzzle;
 
 public enum AdyacentMovement {
     UP (1,0),

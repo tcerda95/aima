@@ -1,23 +1,27 @@
-package search;
+package search.puzzle;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
-public class Puzzle8Board {
-    public static final int DIM = 3;
+public class PuzzleNBoard {
     public static final int EMPTY = 0;
 
     private final int[] board;
     private final int emptyCell;
+    private final int dim;
 
-    public Puzzle8Board(final int[][] board) {
+    public PuzzleNBoard(final int[][] board) {
         Objects.requireNonNull(board);
 
-        this.board = new int[DIM * DIM];
+        if (board.length != board[0].length)
+            throw new IllegalArgumentException("Board must be square");
 
-        for (int i = 0; i < DIM; i++) {
-            for (int j = 0; j < DIM; j++) {
+        this.dim = board.length;
+        this.board = new int[this.dim * this.dim];
+
+        for (int i = 0; i < this.dim; i++) {
+            for (int j = 0; j < this.dim; j++) {
                 final int index = coordinateToIndex(i, j);
                 this.board[index] = board[i][j];
             }
@@ -26,16 +30,21 @@ public class Puzzle8Board {
         this.emptyCell = findEmptyCell();
     }
 
-    private Puzzle8Board(final int[] board) {
+    private PuzzleNBoard(final int[] board, final int dim) {
         this.board = Objects.requireNonNull(board);
         this.emptyCell = findEmptyCell();
+        this.dim = dim;
+    }
+
+    public int getDim() {
+        return dim;
     }
 
     public int[][] getBoard() {
-        int[][] board = new int[DIM][DIM];
+        int[][] board = new int[this.dim][this.dim];
 
-        for (int i = 0; i < DIM; i++)
-            for (int j = 0; j < DIM; j++)
+        for (int i = 0; i < this.dim; i++)
+            for (int j = 0; j < this.dim; j++)
                 board[i][j] = getElement(i, j);
 
         return board;
@@ -49,24 +58,24 @@ public class Puzzle8Board {
         return board[index];
     }
 
-    public Puzzle8Board applyMovement(final int rows, final int columns) {
+    public PuzzleNBoard applyMovement(final int rows, final int columns) {
         if (!isValidMovement(rows, columns))
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid movement");
 
-        final int row = emptyCell / DIM + rows;
-        final int column = emptyCell % DIM + columns;
+        final int row = emptyCell / this.dim + rows;
+        final int column = emptyCell % this.dim + columns;
         final int element = getElement(row, column);
         final int[] newBoard = Arrays.copyOf(board, board.length);
 
         newBoard[emptyCell] = element;
         newBoard[coordinateToIndex(row, column)] = EMPTY;
 
-        return new Puzzle8Board(newBoard);
+        return new PuzzleNBoard(newBoard, dim);
     }
 
     public boolean isValidMovement(final int rows, final int columns) {
-        final int row = emptyCell / DIM + rows;
-        final int column = emptyCell % DIM + columns;
+        final int row = emptyCell / this.dim + rows;
+        final int column = emptyCell % this.dim + columns;
         return isValidPosition(row, column);
     }
 
@@ -79,7 +88,7 @@ public class Puzzle8Board {
     }
 
     private boolean isValidPosition(final int position) {
-        return position >= 0 && position < DIM;
+        return position >= 0 && position < this.dim;
     }
 
     private int findEmptyCell() {
@@ -95,7 +104,7 @@ public class Puzzle8Board {
     }
 
     private int coordinateToIndex(final int row, final int column) {
-        return column + row * DIM;
+        return column + row * this.dim;
     }
 
     @Override
@@ -103,10 +112,10 @@ public class Puzzle8Board {
         if (obj == this)
             return true;
 
-        if (!(obj instanceof Puzzle8Board))
+        if (!(obj instanceof PuzzleNBoard))
             return false;
 
-        final Puzzle8Board other = (Puzzle8Board) obj;
+        final PuzzleNBoard other = (PuzzleNBoard) obj;
 
         return Arrays.equals(board, other.board);
     }
@@ -120,9 +129,9 @@ public class Puzzle8Board {
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < DIM; i++) {
-            for (int j = 0; j < DIM; j++)
-                stringBuilder.append(getElement(i, j));
+        for (int i = 0; i < this.dim; i++) {
+            for (int j = 0; j < this.dim; j++)
+                stringBuilder.append(getElement(i, j)).append(' ');
 
             stringBuilder.append('\n');
         }
