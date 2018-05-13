@@ -1,5 +1,6 @@
 package search.algorithm;
 
+import search.framework.Heuristic;
 import search.framework.Node;
 import search.framework.Problem;
 import search.puzzle.AdyacentMovement;
@@ -9,16 +10,15 @@ import search.puzzle.PuzzleNProblem;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.function.ToIntFunction;
 
 public class AStarSearch<S,A> extends GraphSearch<S,A> {
     private static final int INIT_SIZE = 1024;
 
     private final PriorityQueue<Node<S,A>> pq;
 
-    public AStarSearch(final Problem<S,A> problem, final ToIntFunction<S> heuristic) {
+    public AStarSearch(final Problem<S,A> problem, final Heuristic<S> heuristic) {
         super(problem);
-        final Comparator<Node<S,A>> cmp = Comparator.comparingInt(n -> n.getPathCost() + heuristic.applyAsInt(n.getState()));
+        final Comparator<Node<S,A>> cmp = Comparator.comparingInt(n -> n.getPathCost() + heuristic.cost(n.getState()));
         pq = new PriorityQueue<>(INIT_SIZE, cmp);
     }
 

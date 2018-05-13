@@ -1,8 +1,8 @@
 package search.puzzle;
 
-import java.util.function.ToIntFunction;
+import search.framework.Heuristic;
 
-public class ManhattanDistance implements ToIntFunction<PuzzleNBoard> {
+public class ManhattanDistance implements Heuristic<PuzzleNBoard> {
     private static ManhattanDistance ourInstance = new ManhattanDistance();
 
     public static ManhattanDistance getInstance() {
@@ -12,7 +12,7 @@ public class ManhattanDistance implements ToIntFunction<PuzzleNBoard> {
     private ManhattanDistance() { }
 
     @Override
-    public int applyAsInt(final PuzzleNBoard board) {
+    public int cost(final PuzzleNBoard board) {
         final int dim = board.getDim();
         int distance = 0;
 

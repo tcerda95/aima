@@ -2,12 +2,11 @@ package search.framework;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Node<S,A> {
     private final S state;
-    private final Optional<Node> parent;
-    private final Optional<A> action;
+    private final Node parent;
+    private final A action;
     private final int cost;
 
     public static <S,A> Node<S,A> rootNode(final S state) {
@@ -25,8 +24,8 @@ public class Node<S,A> {
             throw new IllegalStateException("Parent node and action must both be null or non null simultaneously");
 
         this.state = Objects.requireNonNull(state, "Node state may not be null");
-        this.parent = Optional.ofNullable(parent);
-        this.action = Optional.ofNullable(action);
+        this.parent = parent;
+        this.action = action;
         this.cost = cost;
     }
 
@@ -34,16 +33,22 @@ public class Node<S,A> {
         return state;
     }
 
-    public Node getParent() {
-        return parent.orElseThrow(NoSuchElementException::new);
+    public Node<S,A> getParent() {
+        if (!hasParent())
+            throw new NoSuchElementException();
+
+        return parent;
     }
 
     public boolean hasParent() {
-        return parent.isPresent();
+        return parent != null;
     }
 
     public A getAction() {
-        return action.orElseThrow(NoSuchElementException::new);
+        if (!hasParent())
+            throw new NoSuchElementException();
+
+        return action;
     }
 
     public int getPathCost() {
